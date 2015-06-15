@@ -20,12 +20,13 @@ function debug(text) {
 }
 
 function list_all_items() {
-    var time_finder = new RegExp("\\[(\\d*(\\.\\d+)?)\\]"),
+    var time_finder = new RegExp("\\[(\\d*(\\.\\d+)?)(m|h)\\]"),
         editor = document.getElementById("editor"),
         uls,
         ul,
         total = 0,
         i = 0,
+        divisor = null,
         heads_and_counts = [],
         lis,
         li,
@@ -34,7 +35,7 @@ function list_all_items() {
         header,
         headers,
         span,
-	last_child;
+        last_child;
 
     // find all item lists
     uls = document.evaluate(".//ul[starts-with(@class, 'items')]", editor, null, XPathResult.ANY_TYPE, null);
@@ -50,8 +51,13 @@ function list_all_items() {
             debug(text);
             match = time_finder.exec(text);
             if (match && match[1]) {
-                total += parseFloat(match[1]);
-                debug(match[1]);
+                if (match[3] === "m") {
+                    divisor = 60.0;
+                } else if (match[3] === "h") {
+                    divisor = 1.0;
+                }
+                total += parseFloat(match[1]) / divisor;
+                debug(match);
             }
             li = lis.iterateNext();
         }
@@ -84,7 +90,7 @@ function list_all_items() {
             span.setAttribute("style", "float:right; margin-right:22px; background-color: #777; color: #fff; border-radius: 3px; font-size:70%; padding:0.1em 0.2em");
             header.appendChild(span);
         }
-        span.innerHTML = ""+total.toFixed(2);
+        span.innerHTML = ""+total.toFixed(2)+"h";
     }
     setTimeout(list_all_items, 2000);
 }
