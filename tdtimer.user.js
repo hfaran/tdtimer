@@ -6,7 +6,9 @@
 // @description Todoist timer
 // @include     https://todoist.com/*
 // @include     http://todoist.com/*
-// @version     3
+// @include     https://*.todoist.com/*
+// @include     http://*.todoist.com/*
+// @version     4
 // @grant       none
 // ==/UserScript==
 
