@@ -6,7 +6,9 @@
 // @description Todoist timer
 // @include     https://todoist.com/*
 // @include     http://todoist.com/*
-// @version     2
+// @include     https://*.todoist.com/*
+// @include     http://*.todoist.com/*
+// @version     4
 // @grant       none
 // ==/UserScript==
 
@@ -78,19 +80,25 @@ function list_all_items() {
         }
         ul = uls.iterateNext();
     }
+
     debug(heads_and_counts);
+
     for (i = 0; i < heads_and_counts.length; i += 2) {
         header = heads_and_counts[i];
         total = heads_and_counts[i+1];
-        if (header.lastChild.className == "tdtimer") {
-	    span = header.lastChild;
-	} else {
-	    span = document.createElement("span");
-            span.setAttribute("class", "tdtimer");
-            span.setAttribute("style", "float:right; margin-right:22px; background-color: #777; color: #fff; border-radius: 3px; font-size:70%; padding:0.1em 0.2em");
-            header.appendChild(span);
+
+        if (total>0) {
+            if (header.lastChild.className == "tdtimer") {
+                span = header.lastChild;
+            } else {
+                span = document.createElement("span");
+                span.setAttribute("class", "tdtimer");
+                span.setAttribute("style", "float:right; margin-right:22px; background-color: #777; color: #fff; border-radius: 3px; font-size:70%; padding:0.1em 0.2em");
+                header.appendChild(span);
+            }
+
+            span.innerHTML = ""+total.toFixed(2)+"h";
         }
-        span.innerHTML = ""+total.toFixed(2)+"h";
     }
     setTimeout(list_all_items, 2000);
 }
