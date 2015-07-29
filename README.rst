@@ -1,3 +1,8 @@
+### The Skinny for this Fork
+
+* Supports minutes and hours (i.e., `[10m]` and `[2h]` as opposed to just simple numbers with the original)
+* Takes effect for Chrome extension
+
 ===============
 TDtimer
 ===============
