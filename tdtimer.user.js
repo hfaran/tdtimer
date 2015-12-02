@@ -98,6 +98,8 @@ function list_all_items() {
             }
 
             span.innerHTML = ""+total.toFixed(2)+"h";
+        } else if (header.lastChild.className == "tdtimer") {
+            header.removeChild(header.lastChild);
         }
     }
     setTimeout(list_all_items, 2000);
