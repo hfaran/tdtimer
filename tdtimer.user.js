@@ -26,9 +26,9 @@ function list_all_items() {
         editor = document.getElementById("editor"),
         uls,
         ul,
-        total = 0,
+        total_minutes = 0,
         i = 0,
-        divisor = null,
+        multiplier = null,
         heads_and_counts = [],
         lis,
         li,
@@ -44,7 +44,7 @@ function list_all_items() {
     ul = uls.iterateNext();
     while (ul) {
         debug(ul);
-        total = 0;
+        total_minutes = 0;
         // find all list items
         lis = document.evaluate(".//li[starts-with(@id,'item_')]//td/span[@class='text']", ul, null, XPathResult.ANY_TYPE, null);
         li = lis.iterateNext();
@@ -54,16 +54,16 @@ function list_all_items() {
             match = time_finder.exec(text);
             if (match && match[1]) {
                 if (match[3] === "m") {
-                    divisor = 60.0;
+                    multiplier = 1;
                 } else if (match[3] === "h") {
-                    divisor = 1.0;
+                    multiplier = 60;
                 }
-                total += parseFloat(match[1]) / divisor;
+                total_minutes += parseInt(match[1]) * multiplier;
                 debug(match);
             }
             li = lis.iterateNext();
         }
-        debug("Total:", total);
+        debug("Total minutes:", total_minutes);
         // find the title
         header = ul.previousSibling; //headers.iterateNext();
         if (header) {
@@ -75,7 +75,7 @@ function list_all_items() {
             debug("header", header);
             if (header) {
                 heads_and_counts.push(header);
-                heads_and_counts.push(total);
+                heads_and_counts.push(total_minutes);
             }
         }
         ul = uls.iterateNext();
@@ -85,9 +85,9 @@ function list_all_items() {
 
     for (i = 0; i < heads_and_counts.length; i += 2) {
         header = heads_and_counts[i];
-        total = heads_and_counts[i+1];
+        total_minutes = heads_and_counts[i+1];
 
-        if (total>0) {
+        if (total_minutes>0) {
             if (header.lastChild.className == "tdtimer") {
                 span = header.lastChild;
             } else {
@@ -97,7 +97,11 @@ function list_all_items() {
                 header.appendChild(span);
             }
 
-            span.innerHTML = ""+total.toFixed(2)+"h";
+            if (total_minutes < 60) {
+                span.innerHTML = ""+total_minutes+"m";
+            } else {
+                span.innerHTML = ""+((total_minutes / 60).toFixed(2))+"h";
+            }
         } else if (header.lastChild.className == "tdtimer") {
             header.removeChild(header.lastChild);
         }
